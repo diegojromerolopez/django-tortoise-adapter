@@ -1,0 +1,20 @@
+[project]
+name = "polls"
+version = "0.1.0"
+description = "A standard Django project for testing django-tortoise-adapter"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "django>=4.2",
+    "tortoise-orm>=0.20.0",
+    "uvicorn>=0.20.0",
+    "asyncpg>=0.27.0",
+    "aiosqlite>=0.19.0",
+    "psycopg2-binary>=2.9.9",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["polls_project", "polls"]
+
+[tool.uv]
+package = false

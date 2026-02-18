@@ -1,0 +1,56 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DJANGO_SETTINGS_MODULE=polls_project.settings
+      - DEBUG=True
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - TORTOISE_DB_URL=postgres://postgres:postgres@db:5432/postgres
+      - PYTHONPATH=/app:/app/adapter_source
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - ../../../:/app/adapter_source
+    command: sh -c "python manage.py migrate && uvicorn polls_project.asgi:application --host 0.0.0.0 --port 8000"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 2s
+
+  test_runner:
+    build:
+      context: .
+      dockerfile: test_runner.Dockerfile
+    environment:
+      - DJANGO_SETTINGS_MODULE=polls_project.settings
+      - DEBUG=True
+    depends_on:
+      db:
+        condition: service_healthy
+      web:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5

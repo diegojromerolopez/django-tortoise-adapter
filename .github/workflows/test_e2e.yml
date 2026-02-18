@@ -1,0 +1,19 @@
+name: Test E2E
+
+on:
+  push:
+    paths:
+      - 'django_tortoise_adapter/**'
+      - '.github/workflows/test_e2e.yml'
+  pull_request:
+
+jobs:
+  test_e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build and Run Tests
+        run: |
+          cd django_tortoise_adapter/tests/e2e
+          docker compose -f docker-compose.e2e.yml run --rm test_runner

@@ -1,0 +1,65 @@
+[project]
+name = "django-tortoise-adapter"
+version = "0.0.1"
+description = "A translation layer between Django ORM and Tortoise ORM"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "django>=4.2",
+    "tortoise-orm>=0.20.0",
+    "asgiref>=3.7.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "black",
+    "isort",
+    "flake8",
+    "mypy",
+    "ruff",
+    "pylint",
+    "types-setuptools",
+    "django-stubs",
+    "coverage",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+
+[tool.coverage.run]
+omit = ["django_tortoise_adapter/tests/django_app/settings.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.pylint.messages_control]
+disable = [
+    "C0114",  # missing-module-docstring
+    "C0115",  # missing-class-docstring
+    "C0116",  # missing-function-docstring
+]
+
+
